@@ -45,7 +45,9 @@ BASIC_APPS = [
     "django.contrib.staticfiles",
 ]
 
-CUSTOM_APPS = ["cafe.apps.CafeConfig", "users.apps.UsersConfig"]
+CUSTOM_APPS = [
+    "users.apps.UsersConfig",
+]
 
 INSTALLED_APPS = BASIC_APPS + CUSTOM_APPS
 

@@ -10,7 +10,25 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (
             "Profile",
-            {"fields": ("email", "password", "nickname")},
+            {
+                "fields": (
+                    "email",
+                    "password",
+                    "nickname",
+                    "avatar",
+                    "gender",
+                    "isHost",
+                )
+            },
+        ),
+        (
+            "Locale",
+            {
+                "fields": (
+                    "language",
+                    "currency",
+                )
+            },
         ),
         (
             "Permissions",
