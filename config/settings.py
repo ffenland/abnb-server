@@ -50,6 +50,8 @@ CUSTOM_APPS = [
     "users.apps.UsersConfig",
     "cafes.apps.CafesConfig",
     "experiences.apps.ExperiencesConfig",
+    "categories.apps.CategoriesConfig",
+    "reviews.apps.ReviewsConfig",
 ]
 
 INSTALLED_APPS = BASIC_APPS + CUSTOM_APPS
