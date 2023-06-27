@@ -5,13 +5,26 @@ from categories.models import Category
 # Register your models here.
 
 
+@admin.action(description="Set all addrss to none")
+def reset_address(model_admin, request, querysets):
+    """Admin method"""
+    # 3 parameters is necessary
+    for cafe in querysets.all():
+        cafe.address = ""
+        cafe.save()
+
+
 @admin.register(Cafe)
 class CafeAdmin(admin.ModelAdmin):
+    actions = (reset_address,)
+
     list_display = (
         "name",
         "address",
         "kind",
+        "total_facilities",
         "owner",
+        "rating",
         "created_at",
         "updated_at",
     )
@@ -31,6 +44,12 @@ class CafeAdmin(admin.ModelAdmin):
         form = super(CafeAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields["category"].queryset = Category.objects.filter(kind="cafes")
         return form
+
+    search_fields = (
+        "name",
+        "=rating",
+        "^owner__username",
+    )
 
 
 @admin.register(Facility)

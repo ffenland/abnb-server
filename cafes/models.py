@@ -47,6 +47,19 @@ class Cafe(CommonModel):
     def __str__(self):
         return self.name
 
+    def total_facilities(self):
+        return self.facilities.count()
+
+    def rating(self):
+        count = self.review_set.count()
+        if count == 0:
+            return "None"
+        else:
+            total_rating = 0
+            for review in self.review_set.all().values("rating"):
+                total_rating += review["rating"]
+            return round(total_rating / count, 2)
+
 
 class Facility(CommonModel):
     """Cafe Facility Definition"""
