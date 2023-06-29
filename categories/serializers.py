@@ -6,7 +6,10 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         # exclude = ("created_at",)
-        fields = "__all__"
+        fields = (
+            "name",
+            "kind",
+        )
 
 
 class Old_CategorySerializer(serializers.Serializer):
