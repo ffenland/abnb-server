@@ -270,3 +270,16 @@ class CafePhotos(APIView):
             return Response(result.data)
         else:
             return Response(serializer.errors)
+
+
+class CafeBookings(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Cafe.objects.get(pk=pk)
+        except Cafe.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        cafe = self.get_object(pk)
