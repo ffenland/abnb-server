@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -86,4 +86,25 @@ class ChangePassword(APIView):
 
 class LogIn(APIView):
     def post(self, request):
-        pass
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            raise ParseError
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+        if user:
+            login(request, user)
+            return Response({"ok": f"Welcome {user.get_username()}"})
+        else:
+            return Response({"error": "Failed to login"})
+
+
+class LogOut(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({"ok": "Bye Bye"})
