@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -14,6 +15,8 @@ from categories.models import Category
 from .serializers import FacilitySerializer, CafeListSerializer, CafeDetailSerializer
 from reviews.serializers import ReviewSerializer
 from medias.serializers import PhotoSerializer
+from bookings.models import Booking
+from bookings.serializers import PublicBookingSerializer, CreateCafeBookingSerializer
 
 
 class Facilities(APIView):
@@ -282,4 +285,40 @@ class CafeBookings(APIView):
             raise NotFound
 
     def get(self, request, pk):
-        cafe = self.get_object(pk)
+        # booking = Booking.objects.filter(cafe__pk=pk)
+        # get_object를 안쓴경우.
+        # pk가 잘못되었거나 예약이 없으면
+        # booking은 빈 list가 될 수 있다.
+        # 하지만 방이 없는건지 예약이 없는건지 구분 불가.
+
+        # get Times
+        now = timezone.localdate(timezone.now())
+        cafe = self.get_object(pk=pk)
+        booking = Booking.objects.filter(
+            cafe=cafe,
+            kind=Booking.BookingKindChoices.CAFE,
+            start_date__gt=now,
+        )
+        serializer = PublicBookingSerializer(
+            booking,
+            many=True,
+        )
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        cafe = self.get_object(pk=pk)
+        serializer = CreateCafeBookingSerializer(
+            data=request.data,
+        )
+        if serializer.is_valid():
+            # serializer는 유형만 검증한다.
+            # 따라서 추가 validation 필요.
+            booking = serializer.save(
+                cafe=cafe,
+                kind=Booking.BookingKindChoices.CAFE,
+                user=request.user,
+            )
+            serializer = PublicBookingSerializer(booking)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)

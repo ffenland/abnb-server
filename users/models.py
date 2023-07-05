@@ -27,11 +27,10 @@ class User(AbstractUser):
         editable=False,
     )
     email = models.EmailField()
-    nickname = models.CharField(
-        max_length=150,
-    )
-    avatar = models.ImageField(
+
+    avatar = models.URLField(
         null=True,
+        blank=True,
     )
     isHost = models.BooleanField(
         default=False,
