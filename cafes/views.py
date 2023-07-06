@@ -88,7 +88,12 @@ class Cafes(APIView):
 
     def post(self, request):
         # check apiView parameters
-        serializer = CafeDetailSerializer(data=request.data)
+        serializer = CafeDetailSerializer(
+            data=request.data,
+            context={
+                "request": request,
+            },
+        )
         if serializer.is_valid():
             # check category
             category_pk = request.data.get("category")
@@ -97,7 +102,7 @@ class Cafes(APIView):
             try:
                 category = Category.objects.get(pk=category_pk)
                 if category.kind == Category.CategoryKindChoices.EXPERIENCE:
-                    raise ParseError("The kind of category should be rooms")
+                    raise ParseError("The kind of category should be cafes")
             except Category.DoesNotExist:
                 raise ParseError("Category not found")
             try:
@@ -112,7 +117,14 @@ class Cafes(APIView):
                         facility = Facility.objects.get(pk=facility_pk)
                         new_cafe.facilities.add(facility)
 
-                    return Response(CafeDetailSerializer(new_cafe).data)
+                    return Response(
+                        CafeDetailSerializer(
+                            new_cafe,
+                            context={
+                                "request": request,
+                            },
+                        ).data
+                    )
             except Exception:
                 raise ParseError("Facility not found")
         else:
@@ -184,7 +196,14 @@ class CafeDetail(APIView):
             if len(new_facilities) > 0:
                 update_args["facilities"] = new_facilities
             updated_cafe = serializer.save(**update_args)
-            return Response(CafeDetailSerializer(updated_cafe).data)
+            return Response(
+                CafeDetailSerializer(
+                    updated_cafe,
+                    context={
+                        "request": request,
+                    },
+                ).data
+            )
 
 
 class CafeReviews(APIView):

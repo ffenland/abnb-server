@@ -60,6 +60,7 @@ CUSTOM_APPS = [
     "bookings.apps.BookingsConfig",
     "medias.apps.MediasConfig",
     "direct_messages.apps.DirectMessagesConfig",
+    "menus.apps.MenusConfig",
 ]
 
 INSTALLED_APPS = BASIC_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -163,3 +164,10 @@ AUTH_USER_MODEL = "users.User"
 
 MEDIA_ROOT = "uploads"
 MEDIA_URL = "user-uploads/"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "config.authentication.TrustMeAuth",
+    ]
+}

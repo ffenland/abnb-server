@@ -10,7 +10,8 @@ class PublicBookingSerializer(serializers.ModelSerializer):
             "pk",
             "start_date",
             "end_date",
-            "experience_time",
+            "exp_start_time",
+            "exp_end_time",
             "guests",
         )
 
@@ -52,5 +53,43 @@ class CreateCafeBookingSerializer(serializers.ModelSerializer):
             end_date__gte=attrs["start_date"],
         ).exists():
             raise serializers.ValidationError("those dates are already booked")
+
+        return attrs
+
+
+class CreateExpBookingSerializer(serializers.ModelSerializer):
+    exp_start_time = serializers.DateTimeField()
+    exp_end_time = serializers.DateTimeField()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "exp_start_time",
+            "exp_end_time",
+            "guests",
+        )
+
+    def validate_exp_start_time(self, value):
+        now = timezone.localtime(timezone.now())
+        if now > value:
+            raise serializers.ValidationError("Can't book in the past!")
+        return value
+
+    def validate_exp_end_time(self, value):
+        now = timezone.localtime(timezone.now())
+        if now > value:
+            raise serializers.ValidationError("Can't book in the past!")
+        return value
+
+    def validate(self, attrs):
+        if attrs["exp_end_time"] <= attrs["exp_start_time"]:
+            raise serializers.ValidationError(
+                "End time can't be earlier than start time."
+            )
+        if Booking.objects.filter(
+            exp_start_time__lte=attrs["exp_end_time"],
+            exp_end_time__gte=attrs["exp_start_time"],
+        ).exists():
+            raise serializers.ValidationError("those times are already booked")
 
         return attrs

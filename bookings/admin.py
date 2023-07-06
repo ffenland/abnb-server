@@ -13,6 +13,7 @@ class Booking(admin.ModelAdmin):
         "experience",
         "start_date",
         "end_date",
-        "experience_time",
+        "exp_start_time",
+        "exp_end_time",
         "guests",
     )
