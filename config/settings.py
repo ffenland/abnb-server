@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ysk45!cci4vr#abdd*5%k#9(fqy3y=_t7^fvucyrs@om*q17&j"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,9 +45,7 @@ BASIC_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = [
-    "rest_framework",
-]
+THIRD_PARTY_APPS = ["rest_framework", "rest_framework.authtoken"]
 
 CUSTOM_APPS = [
     "common.apps.CommonConfig",
@@ -169,5 +167,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "config.authentication.TrustMeAuth",
+        "rest_framework.authentication.TokenAuthentication",
+        "config.authentication.JWTAuthentication",
     ]
 }
