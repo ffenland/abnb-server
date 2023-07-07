@@ -21,7 +21,10 @@ class TrustMeAuth(BaseAuthentication):
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        auth = request.headers.get("Authorization").split()
+        auth_key = request.headers.get("Authorization")
+        if not auth_key:
+            return None
+        auth = auth_key.split()
         if not auth or auth[0].lower() != "bearer":
             return None
 

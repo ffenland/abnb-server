@@ -3,7 +3,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_200_OK
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.exceptions import (
     NotFound,
     NotAuthenticated,
@@ -36,7 +36,10 @@ class Facilities(APIView):
             facility = seiralizer.save()
             return Response(FacilitySerializer(facility).data)
         else:
-            return Response(seiralizer.errors)
+            return Response(
+                seiralizer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
 
 class FacilityDetail(APIView):
@@ -62,7 +65,10 @@ class FacilityDetail(APIView):
             updated_facility = serializer.save()
             return Response(FacilitySerializer(updated_facility).data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
     def delete(self, request, pk):
         facility = self.get_object(pk)
@@ -128,7 +134,10 @@ class Cafes(APIView):
             except Exception:
                 raise ParseError("Facility not found")
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
 
 class CafeDetail(APIView):
