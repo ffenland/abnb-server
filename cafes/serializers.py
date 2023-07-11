@@ -80,7 +80,12 @@ class CafeDetailSerializer(ModelSerializer):
         # 현재 보고있는 cafe가 있는지 확인한다.
         # 그럼 wishlist는 여러개 일 수 있는거네?
         # mtm 관계니까
-        return Wishlist.objects.filter(
-            user=request.user,
-            cafes__id=cafe.id,
-        ).exists()
+
+        # 로그인하지 않은경우 False 반환
+        if request.user.is_authenticated:
+            return Wishlist.objects.filter(
+                user=request.user,
+                cafes__id=cafe.id,
+            ).exists()
+        else:
+            return False
