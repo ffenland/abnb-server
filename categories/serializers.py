@@ -7,6 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         # exclude = ("created_at",)
         fields = (
+            "pk",
             "name",
             "kind",
         )

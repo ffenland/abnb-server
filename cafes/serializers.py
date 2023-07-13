@@ -10,6 +10,7 @@ class FacilitySerializer(ModelSerializer):
     class Meta:
         model = Facility
         fields = (
+            "pk",
             "name",
             "description",
         )
@@ -72,7 +73,10 @@ class CafeDetailSerializer(ModelSerializer):
 
     def get_is_owner(self, cafe):
         request = self.context["request"]
-        return request.user == cafe.owner
+        if request:
+            return request.user == cafe.owner
+        else:
+            return False
 
     def get_is_on_wishlist(self, cafe):
         request = self.context["request"]
@@ -81,11 +85,14 @@ class CafeDetailSerializer(ModelSerializer):
         # 그럼 wishlist는 여러개 일 수 있는거네?
         # mtm 관계니까
 
-        # 로그인하지 않은경우 False 반환
-        if request.user.is_authenticated:
-            return Wishlist.objects.filter(
-                user=request.user,
-                cafes__id=cafe.id,
-            ).exists()
+        if request:
+            # 로그인하지 않은경우 False 반환
+            if request.user.is_authenticated:
+                return Wishlist.objects.filter(
+                    user=request.user,
+                    cafes__id=cafe.id,
+                ).exists()
+            else:
+                return False
         else:
             return False
