@@ -8,6 +8,7 @@ urlpatterns = [
     path("<int:pk>/facilities/", views.CafeFacilities.as_view()),
     path("<int:pk>/photos/", views.CafePhotos.as_view()),
     path("<int:pk>/bookings/", views.CafeBookings.as_view()),
+    path("<int:pk>/bookings/check/", views.CafeBookingCheck.as_view()),
     path("facilities/", views.Facilities.as_view()),
     path("facilities/<int:pk>", views.FacilityDetail.as_view()),
 ]

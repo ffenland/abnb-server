@@ -44,11 +44,13 @@ class CreateCafeBookingSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
+        cafe = self.context.get("cafe")
         if attrs["end_date"] <= attrs["start_date"]:
             raise serializers.ValidationError(
                 "The start date cannot be earlier than the end date."
             )
         if Booking.objects.filter(
+            cafe=cafe,
             start_date__lte=attrs["end_date"],
             end_date__gte=attrs["start_date"],
         ).exists():

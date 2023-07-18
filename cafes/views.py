@@ -337,6 +337,7 @@ class CafeBookings(APIView):
         cafe = self.get_object(pk=pk)
         serializer = CreateCafeBookingSerializer(
             data=request.data,
+            context={"cafe": cafe},
         )
         if serializer.is_valid():
             # serializer는 유형만 검증한다.
@@ -350,3 +351,24 @@ class CafeBookings(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+
+class CafeBookingCheck(APIView):
+    def get_object(self, pk):
+        try:
+            return Cafe.objects.get(pk=pk)
+        except Cafe.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        cafe = self.get_object(pk=pk)
+        start_date = request.query_params.get("start_date")
+        end_date = request.query_params.get("end_date")
+        if Booking.objects.filter(
+            cafe=cafe,
+            start_date__lte=end_date,
+            end_date__gte=start_date,
+        ).exists():
+            return Response({"ok": False})
+        else:
+            return Response({"ok": True})
