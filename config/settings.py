@@ -63,6 +63,7 @@ CUSTOM_APPS = [
     "medias.apps.MediasConfig",
     "direct_messages.apps.DirectMessagesConfig",
     "menus.apps.MenusConfig",
+    "dosomething.apps.DosomethingConfig",
 ]
 
 INSTALLED_APPS = BASIC_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
