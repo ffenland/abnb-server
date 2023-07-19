@@ -10,7 +10,7 @@ services:
     runtime: python
     region: singapore
     buildCommand: "./build.sh"
-    startCommand: "gunicorn abnb-server.wsgi:application"
+    startCommand: "gunicorn config.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
