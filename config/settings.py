@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 
 # Load environment from .env
@@ -108,18 +109,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django_psdb_engine",
-        "NAME": os.getenv("DB_NAME"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "OPTIONS": {
-            "ssl": {"ca": os.environ.get("MYSQL_ATTR_SSL_CA")},
-            "charset": "utf8mb4",
-        },
-    }
+    "default": dj_database_url.config(
+        # Feel free to alter this value to suit your needs.
+        default="postgres://ffenland:cf670Nldf0VUh4BzlTFWHJcjRrg9IMHD@dpg-cir4v0lgkuvqadoght2g-a/airbnbclone_o81v",
+        conn_max_age=600,
+    )
 }
 
 
