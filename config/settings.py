@@ -34,9 +34,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "RENDER" not in os.environ
 
-ALLOWED_HOSTS = [
-    "localhost",
-]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
@@ -113,11 +111,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        # Feel free to alter this value to suit your needs.
-        default="postgres://ffenland:cf670Nldf0VUh4BzlTFWHJcjRrg9IMHD@dpg-cir4v0lgkuvqadoght2g-a/airbnbclone_o81v",
-        conn_max_age=600,
-    )
+    "default": {
+        "ENGINE": "django_psdb_engine",
+        "NAME": os.getenv("DB_NAME"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "OPTIONS": {
+            "ssl": {"ca": os.environ.get("MYSQL_ATTR_SSL_CA")},
+            "charset": "utf8mb4",
+        },
+    }
 }
 
 
